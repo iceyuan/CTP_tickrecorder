@@ -30,7 +30,8 @@
 *.exe
 *.out
 *.app
-bin/*
 
 *.con
+bin/*
+lib/*
 TickData/*
