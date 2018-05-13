@@ -1,1 +1,1 @@
-这是一个简单的基于CTP的记录所有合约tick行情的linux, C++程序。
+这是一个简单的基于期货CTP的记录所有期货合约tick行情的linux, C++程序。下载之后执行make编译，然后设置一下LD_LIBRARY_PATH环境变量即可运行。
