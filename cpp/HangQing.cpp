@@ -1,5 +1,13 @@
-//简单的例子，介绍CThostFtdcMdApi和CThostFtdcMdSpi接口的使用。
-// 本例将演示一个报单录入操作的过程
+/**
+ * @file   HangQing.cpp
+ * @author Ye Shiwei <yeshiwei.math@gmail.com>
+ * @date   Mon Jun 25 20:02:23 2018
+ * 
+ * @brief  记录行情的程序.
+ * 
+ * 
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -9,10 +17,13 @@
 #include <fstream>
 #include <ctime>
 #include <sys/stat.h>
+#include <map>
 
 #include "ThostFtdcMdApi.h"
 #include "ThostFtdcTraderApi.h"
 #include "util.h"
+#include "Kline.h"
+
 using namespace std;
 
 // 会员代码
@@ -230,6 +241,15 @@ public:
     /**/
   }
 
+  void add2Kline(CThostFtdcDepthMarketDataField *tick) {
+    map<string, Kline>::iterator it = KlineMap.find(tick -> InstrumentID);
+    if (it== KlineMap.end()) {
+      KlineMap.insert(pair<string, Kline>(tick -> InstrumentID, Kline(tick)));
+    } else {
+      it ->second.add_tick(tick);
+    }
+  }
+  
   // 行情应答
   virtual void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField
 				    *pDepthMarketData)
@@ -243,6 +263,7 @@ public:
 	   pDepthMarketData->UpdateTime,
 	   pDepthMarketData->UpdateMillisec,
 	   pDepthMarketData->LastPrice);
+    add2Kline(pDepthMarketData);
     ///交易日
     OutFile << pDepthMarketData -> TradingDay << "|"
       ///合约代码
@@ -351,6 +372,7 @@ private:
   CThostFtdcMdApi *m_pUserApi;
   int iRequestID;
   ofstream OutFile;
+  map<string, Kline> KlineMap;
 };
 
 void parse_config(string config_file) {
