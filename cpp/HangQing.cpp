@@ -206,11 +206,11 @@ public:
     } 
     char dir[100];
     sprintf(dir, "TickData/%d%02d/",1900 + ltm->tm_year, 1 + ltm->tm_mon);
-    char filename[100];
-    sprintf(filename,"%s/%d%02d%02d.txt", dir, 1900+ ltm->tm_year,
+    char fname[100];
+    sprintf(fname,"%s/%d%02d%02d.txt", dir, 1900+ ltm->tm_year,
 	    1 + ltm->tm_mon, ltm->tm_mday);
     mkdir(dir, S_IRWXU);
-    OutFile.open(filename, ofstream::out | ofstream::app);
+    filename = fname;
     /**/
     pid_t pid = fork();
     if (pid == 0) {
@@ -264,6 +264,8 @@ public:
 	   pDepthMarketData->UpdateMillisec,
 	   pDepthMarketData->LastPrice);
     add2Kline(pDepthMarketData);
+
+    OutFile.open(filename.c_str(), ofstream::out | ofstream::app);
     ///交易日
     OutFile << pDepthMarketData -> TradingDay << "|"
       ///合约代码
@@ -353,6 +355,7 @@ public:
 	///业务日期
 	    << pDepthMarketData -> ActionDay
 	    << endl;
+    OutFile.close();
   };
 
   // 针对用户请求的出错通知
@@ -372,6 +375,7 @@ private:
   CThostFtdcMdApi *m_pUserApi;
   int iRequestID;
   ofstream OutFile;
+  string filename;
   map<string, Kline> KlineMap;
 };
 
