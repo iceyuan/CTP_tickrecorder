@@ -264,7 +264,6 @@ public:
 	   pDepthMarketData->UpdateMillisec,
 	   pDepthMarketData->LastPrice);
     add2Kline(pDepthMarketData);
-
     OutFile.open(filename.c_str(), ofstream::out | ofstream::app);
     ///交易日
     OutFile << pDepthMarketData -> TradingDay << "|"
